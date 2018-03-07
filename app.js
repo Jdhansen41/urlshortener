@@ -6,7 +6,7 @@ var validUrl = require('valid-url');
 var cors = require('cors'); //Helps with cross origin requests
 var mongoose= require('mongoose');
 var path = require("path");
-const shortUrl = require("./models/shortUrl");
+const shorturl = require("./models/shorturl");
 
 //MIDDLEWARE
 app.use(bodyParser.json());
@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname + "/public")));
 
 
 //Connect to database on heroku or here locally
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/shortUrls');
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/shorturls');
 
 
 
@@ -36,7 +36,7 @@ app.get('/new/:urlShort(*)', function(req,res,next){
         //create a random number to use as the shortened url
         var short = Math.floor(Math.random()*100000).toString();
         //Create object we'll push into database
-        var data = new shortUrl({
+        var data = new shorturl({
             originalUrl: test,
             shorterUrl: short
         });
@@ -49,7 +49,7 @@ app.get('/new/:urlShort(*)', function(req,res,next){
         return res.json(data)
     }else{
         //Invalid Url, display failed
-        var data = new shortUrl({
+        var data = new shorturl({
             originalUrl: test,
             shorterUrl: "Invalid Url"
         });
@@ -64,8 +64,8 @@ app.get('/new/:urlShort(*)', function(req,res,next){
 //Query databse and foward to original url
 app.get('/:urlToForward', function(req,res,next){
     var shorterUrl = req.params.urlToForward;
-    //Searching shortUrl collection, see if the requested shorterUrl matches any shorterUrl in collection
-    shortUrl.findOne({'shorterUrl' : shorterUrl}, function(err,data){
+    //Searching shorturl collection, see if the requested shorterUrl matches any shorterUrl in collection
+    shorturl.findOne({'shorterUrl' : shorterUrl}, function(err,data){
         //findOne is a built in mongoose function
         console.log("found it");
         if(err){
